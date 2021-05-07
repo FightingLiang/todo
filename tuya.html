@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>涂鸦板</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>-->
+  <style type="text/css">
+    html,body{
+      width: 100%;
+      height: 100%;
+    }
+    *{
+      padding: 0;
+      margin: 0;
+    }
+    #myCanvas {
+      /* border: 1px solid black; */
+    }
+  </style>
+</head>
+
+<body>
+  <!--注意，设置canvas宽、高时不要加上单位，如px-->
+  <canvas id="myCanvas"></canvas>
+  <!-- <button onclick="draw()">绘制</button> -->
+  <!-- <div>
+    <button onclick="clean();">清 空</button>
+    <button onclick="save();">生成图片</button>
+  </div>
+  <img id='img' /> -->
+</body>
+<script src="http://wechatfe.github.io/vconsole/lib/vconsole.min.js?v=3.2.0"></script>
+<script>
+  new VConsole()
+  let myCanvas = document.getElementById("myCanvas")
+  let width = document.body.clientWidth
+  let height = document.body.clientHeight
+  myCanvas.style.width = `${width}px`
+  myCanvas.style.height = `${height}px`
+  // myCanvas.setAttribute('width', width)
+  // myCanvas.setAttribute('height', height)
+
+  myCanvas.setAttribute('width', width * 2)
+  myCanvas.setAttribute('height', height * 2)
+  let ctx = myCanvas.getContext("2d");
+  ctx.fillStyle = '#000';
+  ctx.lineWidth = 5
+  ctx.scale(2,2)
+
+  myCanvas.addEventListener('touchstart', e => {
+    let { left, top } = myCanvas.getBoundingClientRect()
+    ctx.beginPath()
+    ctx.moveTo(e.touches[0].clientX - left, e.touches[0].clientY - top) // 将笔触移动到这个点上
+  })
+  myCanvas.addEventListener('touchmove', e => {
+    let { left, top } = myCanvas.getBoundingClientRect()
+    e.preventDefault(); // 阻止默认事件，阻止下拉刷新
+    ctx.lineTo(e.touches[0].clientX - left, e.touches[0].clientY - top);
+    ctx.stroke();  // 结束图形
+    this.trajectoryArr.push({x: e.touches[0].clientX - left, y: e.touches[0].clientY - top})
+  });
+  myCanvas.addEventListener('touchend', e => {
+    this.trajectoryArr.push({x: null, y: null})
+  });
+</script>
